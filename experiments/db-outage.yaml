@@ -1,0 +1,6 @@
+experiment:
+  name: "db-outage-sim"
+  target: "failureforge-db-1"
+  failure: container_kill
+  duration_seconds: 30
+  health_check: "http://localhost:8080"
