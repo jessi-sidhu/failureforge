@@ -41,3 +41,20 @@ def compute_metrics(rows: list):
         "error_rate": error_rate,
         "average_response_time": average_response_time
     }
+    
+def generate_report(experiment_name: str):
+    """
+    Generates markdown file with metrics for given experiment
+    """
+    results = load_results(experiment_name, "results.db")
+    metrics = compute_metrics(results)
+    
+    with open(f"{experiment_name}_report.md", "w") as f:
+        f.write(f"# FailureForge Resilience Report\n")
+        f.write(f"## Experiment: {experiment_name}\n\n")
+        f.write(f"- Total polls: {metrics['total_polls']}\n")
+        f.write(f"- Healthy polls: {metrics['healthy_polls']}\n")
+        f.write(f"- Unhealthy polls: {metrics['unhealthy_polls']}\n")
+        f.write(f"- Error rate: {metrics['error_rate']:.2f}%\n")
+        f.write(f"- Average response time: {metrics['average_response_time']:.2f}ms\n")
+        print(f"Report saved to {experiment_name}_report.md")
