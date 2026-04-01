@@ -1,8 +1,8 @@
 # FailureForge Resilience Report
 ## Experiment: db-outage-sim
 
-- Total polls: 18
-- Healthy polls: 15
+- Total polls: 33
+- Healthy polls: 30
 - Unhealthy polls: 3
-- Error rate: 16.67%
-- Average response time: 11.26ms
+- Error rate: 9.09%
+- Average response time: 10.73ms
