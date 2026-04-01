@@ -1,5 +1,6 @@
 import docker
 import datetime
+import subprocess
 
 
 class ContainerKiller:
@@ -40,4 +41,32 @@ class ContainerKiller:
             print(f"[{recovered_at}] RECOVERED: started '{self.container_name}'")
         except docker.errors.NotFound:
             print(f"ERROR: container '{self.container_name}' not found")
-            
+
+
+class PumbaInjector:
+    """
+    Injects failures using Pumba as the underlying engine.
+    """
+    def __init__(self, container_name: str):
+        """
+        Args:
+            container_name: the exact name of the Docker container to target
+        """
+        self.container_name = container_name
+        self.killed_at = None
+        
+    def inject(self):
+        """
+        Uses Pumba to kill the target container.
+        """
+        subprocess.run(["pumba", "kill", "-s", "SIGTERM", self.container_name])
+        self.killed_at = datetime.datetime.now()
+        print(f"[{self.killed_at}] INJECTED via Pumba: killed '{self.container_name}'")
+        
+    def recover(self):
+        """
+        Restarts the container using docker start.
+        """
+        subprocess.run(["docker", "start", self.container_name])
+        recovered_at = datetime.datetime.now()
+        print(f"[{recovered_at}] RECOVERED: started '{self.container_name}'")

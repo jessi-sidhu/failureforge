@@ -1,5 +1,5 @@
 from config import load_config
-from injectors import ContainerKiller
+from injectors import PumbaInjector
 from health import poll_health
 from storage import init_db, save_results
 
@@ -16,7 +16,7 @@ def run_experiment(config_path: str):
     init_db()
     print(f"Starting experiment: {config.name}")
     
-    killer = ContainerKiller(config.target)
+    killer = PumbaInjector(config.target)
     killer.inject()
     
     results = poll_health(config.health_check, config.duration_seconds)
