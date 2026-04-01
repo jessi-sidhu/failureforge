@@ -20,3 +20,24 @@ def load_results(experiment_name: str, db_path: str = "results.db"):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+def compute_metrics(rows: list):
+    """
+    Computes metrics for a given row
+    
+    Returns:
+        A dictionary of all metrics computed
+    """
+    total_polls = len(rows)
+    healthy_polls = sum(1 for row in rows if row[5] == 1)
+    unhealthy_polls = total_polls - healthy_polls
+    error_rate = (unhealthy_polls/total_polls * 100 if total_polls > 0 else 0)
+    response_time_list = [row [4] for row in rows if row[4] is not None]
+    average_response_time = (sum(response_time_list) / len(response_time_list) if response_time_list else 0)
+    return {
+        "total_polls": total_polls,
+        "healthy_polls": healthy_polls,
+        "unhealthy_polls": unhealthy_polls,
+        "error_rate": error_rate,
+        "average_response_time": average_response_time
+    }
