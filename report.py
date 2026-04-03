@@ -58,6 +58,8 @@ def generate_report(experiment_name: str):
     with open(f"{experiment_name}_report.md", "w") as f:
         f.write(f"# FailureForge Resilience Report\n")
         f.write(f"## Experiment: {experiment_name}\n\n")
+        f.write(f"**Generated:** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        f.write(f"**Fault type:** container_kill\n\n")
         f.write(f"- Total polls: {metrics['total_polls']}\n")
         f.write(f"- Healthy polls: {metrics['healthy_polls']}\n")
         f.write(f"- Unhealthy polls: {metrics['unhealthy_polls']}\n")
