@@ -57,15 +57,37 @@ python3 cli.py report --experiment-name db-outage-sim
 | `report.py`    | Computes metrics and generates markdown reports   |
 | `cli.py`       | CLI interface built with Typer                    |
 
+## Metrics
+
+| Metric | Description |
+|---|---|
+| Availability | % of polls that returned a healthy response |
+| Error rate | % of polls that failed during the fault window |
+| Avg response time | Mean response time across all healthy polls |
+| P95 response time | 95th percentile response time — captures worst-case latency |
+| First failure detected | Timestamp of the first unhealthy poll |
+| Recovery time | Seconds between first failure and first successful recovery |
+
 ## Sample Report
 
 ```
 # FailureForge Resilience Report
 ## Experiment: db-outage-sim
 
-- Total polls: 33
-- Healthy polls: 30
+**Generated:** 2026-04-02 23:34:09
+
+**Fault type:** container_kill
+
+- Total polls: 93
+- Healthy polls: 90
 - Unhealthy polls: 3
-- Error rate: 9.09%
-- Average response time: 10.73ms
+- Error rate: 3.23%
+- Average response time: 9.95ms
+- P95 response time: 16.93ms
+- Availability:  96.77%
+- First failure detected: 2026-03-30 19:56:57.031592
+- Recovered: True
+- Recovery time: 1091.105836s
+
+The service maintained  96.77% availability during the fault window.
 ```
