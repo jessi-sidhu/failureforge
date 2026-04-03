@@ -22,6 +22,30 @@ def load_results(experiment_name: str, db_path: str = "results.db"):
     conn.close()
     return rows
 
+def compute_recovery(rows: list):
+    first_failure_time = None
+    recovery_time = None
+    recovered = False
+    
+    for row in rows:
+        timestamp = row[2]
+        healhty = row[5]
+        
+        if healhty == 0 and first_failure_time is None:
+            first_failure_time = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+        
+        if healhty == 1 and first_failure_time is not None:
+            recovery_time = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+            recovery_time = (recovery_time - first_failure_time).total_seconds()
+            recovered = True
+            break
+    
+    return {
+        "first_failure_detected": first_failure_time,
+        "recovered": recovered,
+        "recovery_time_seconds": recovery_time
+    }
+
 def compute_metrics(rows: list):
     """
     Computes metrics for a given row
@@ -54,6 +78,11 @@ def generate_report(experiment_name: str):
     """
     results = load_results(experiment_name, "results.db")
     metrics = compute_metrics(results)
+    recovery_results = compute_recovery(results)
+    
+
+    
+    
     
     with open(f"{experiment_name}_report.md", "w") as f:
         f.write(f"# FailureForge Resilience Report\n")
@@ -67,5 +96,8 @@ def generate_report(experiment_name: str):
         f.write(f"- Average response time: {metrics['average_response_time']:.2f}ms\n")
         f.write(f"- P95 response time: {metrics['p95_response_time']:.2f}ms\n")
         f.write(f"- Availability: {metrics['availability']: .2f}%\n")
+        f.write(f"- First failure detected: {recovery_results['first_failure_detected']}\n")
+        f.write(f"- Recovered: {recovery_results['recovered']}\n")
+        f.write(f"- Recovery time: {recovery_results['recovery_time_seconds']:.2f}s\n")
         f.write(f"\nThe service maintained {metrics['availability']: .2f}% availability during the fault window.\n")
         print(f"Report saved to {experiment_name}_report.md")
